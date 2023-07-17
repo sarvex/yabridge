@@ -35,7 +35,7 @@ if file_stem.endswith("-migrated"):
     print("This project file has already been migrated to the new format")
     exit(1)
 
-migrated_filename = file_stem + "-migrated" + file_extension
+migrated_filename = f"{file_stem}-migrated{file_extension}"
 if os.path.exists(migrated_filename):
     print(
         f"'{migrated_filename}' already exists, back it up and move it elsewhere "

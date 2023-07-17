@@ -31,7 +31,7 @@ if file_stem.endswith("-migrated"):
     print("This project file has already been migrated to the new format")
     exit(1)
 
-migrated_filename = file_stem + "-migrated" + file_extension
+migrated_filename = f"{file_stem}-migrated{file_extension}"
 if os.path.exists(migrated_filename):
     print(
         f"'{migrated_filename}' already exists, back it up and move it elsewhere "
@@ -57,18 +57,18 @@ print()
 # We'll search through the original file, and prompt to replace all VST3 class
 # IDs we come across. See `WineUID` in yabridge's source code for an
 # explanation of this conversion.
-with open(filename, "rb") as f_input, open(migrated_filename, "xb") as f_output:
+with (open(filename, "rb") as f_input, open(migrated_filename, "xb") as f_output):
     migrated_file = []
-    for line in f_input.readlines():
+    for line in f_input:
         # Sadly can't use the walrus operator here since old distros might
         # still ship with Python 3.6
         matches = REAPER_VST3_RE.search(line)
         if matches is not None:
-            plugin_name = matches.group(1).decode("utf-8")
+            plugin_name = matches[1].decode("utf-8")
 
             wine_uid_start, wine_uid_end = matches.span(2)
-            wine_uid = bytearray.fromhex(matches.group(2).decode("ascii"))
-            converted_uid = bytearray.fromhex(matches.group(2).decode("ascii"))
+            wine_uid = bytearray.fromhex(matches[2].decode("ascii"))
+            converted_uid = bytearray.fromhex(matches[2].decode("ascii"))
 
             converted_uid[0] = wine_uid[3]
             converted_uid[1] = wine_uid[2]
